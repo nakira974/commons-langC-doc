@@ -16,7 +16,7 @@ public class DocBean {
     private static final Logger LOGGER = Logger.getLogger(DocBean.class);
 
     @EJB
-    private IBuildDoc buildDocBean;
+    private IBuild buildDocBean;
 
     public String getRepositoryUrl() {
         String propFileName = "application.properties";

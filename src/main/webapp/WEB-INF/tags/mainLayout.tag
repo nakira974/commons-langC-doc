@@ -26,23 +26,17 @@
     <title>${pageName}</title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
     <link rel="icon" type="image/png" href="data:image/png;base64,${faviconBase64Image}">
-    <style>
-        <%@include file="/assets/css/Nunito.css" %>
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
     <style>
         <%@include file="/assets/css/styles.css" %>
-    </style>
-    <style>
-        <%@include file="/assets/bootstrap/css/bootstrap.min.css" %>
     </style>
 </head>
 <body id="page-top">
 
 <div id="wrapper">
-    <lkhsoft:sidebar/>
     <div class="d-flex flex-column" id="content-wrapper">
         <div id="content">
-            <lkhsoft:navbar/>
             <div class="container-fluid jsp-view" id="${viewName}">
                 <jsp:doBody/>
             </div>

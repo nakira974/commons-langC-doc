@@ -14,6 +14,6 @@
 
 <footer class="bg-white sticky-footer">
     <div class="container my-auto">
-        <div class="text-center my-auto copyright"><span>Copyright © Reno-System <%= formattedYear %></span></div>
+        <div class="text-center my-auto copyright"><span>Copyright © Lkhsoft <%= formattedYear %></span></div>
     </div>
 </footer>

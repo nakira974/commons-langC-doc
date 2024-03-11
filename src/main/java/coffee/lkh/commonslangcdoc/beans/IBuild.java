@@ -3,7 +3,7 @@ package coffee.lkh.commonslangcdoc.beans;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public interface IBuildDoc  {
+public interface IBuild {
 
     void cloneRepo(String url, String localPath);
 

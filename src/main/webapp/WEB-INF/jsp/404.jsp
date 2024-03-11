@@ -12,8 +12,8 @@
         <div class="error mx-auto" data-text="404">
             <p class="m-0">404 🙄</p>
         </div>
-        <p class="text-dark mb-5 lead" style="margin-top: 3rem;">Page introuvable</p>
-        <p class="text-black-50 mb-0">On dirait que vous essayez de vous échapper de la matrix...</p><a
-            href="${pageContext.request.contextPath}/">← Retourner sur la page principale</a>
+        <p class="text-dark mb-5 lead" style="margin-top: 3rem;">Page not found</p>
+        <p class="text-black-50 mb-0">Like you want to escape the matrix...</p><a
+            href="${pageContext.request.contextPath}/">← Return on main page</a>
     </div>
 </lkhsoft:mainLayout>

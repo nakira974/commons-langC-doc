@@ -1,10 +1,7 @@
 package coffee.lkh.commonslangcdoc.beans;
 
 import jakarta.ejb.Local;
-import jakarta.ejb.Singleton;
 import jakarta.ejb.Stateful;
-import jakarta.ejb.Stateless;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -12,18 +9,16 @@ import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.jboss.logging.Logger;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.concurrent.Callable;
 
 @Stateful
 @Named("buildDocumentationBean")
-@Local(IBuildDoc.class)
-public class BuildDocBean  implements IBuildDoc{
+@Local(IBuild.class)
+public class CMakeBuildBean implements IBuild {
     Logger logger = Logger.getLogger("CmakeLogger");
 
     private Path buildPath;
@@ -48,11 +43,11 @@ public class BuildDocBean  implements IBuildDoc{
                 git.submoduleInit().call();
                 git.submoduleUpdate().call();
             }catch (JGitInternalException | GitAPIException e){
-                Logger.getLogger(BuildDocBean.class).error("Git api error!",e);
+                Logger.getLogger(CMakeBuildBean.class).error("Git api error!",e);
 
             }
         } catch (IOException e) {
-            Logger.getLogger(BuildDocBean.class).error("Error while cloning repo!",e);
+            Logger.getLogger(CMakeBuildBean.class).error("Error while cloning repo!",e);
         }
     }
 

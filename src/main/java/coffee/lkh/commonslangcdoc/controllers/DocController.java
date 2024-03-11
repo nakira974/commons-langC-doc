@@ -6,7 +6,9 @@ import jakarta.servlet.ServletContext;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.server.mvc.Viewable;
 
@@ -32,28 +34,32 @@ public class DocController {
         try {
             final String base = this.docBean.getDocPath().resolve("html").toString();
             final File f = new File(String.format("%s/%s", base, "index.html"));
+            if(f.exists() && !f.isDirectory()) {
+                final Response.ResponseBuilder response = Response.ok((Object) new FileInputStream(f));
+                response.header("Content-Disposition", "inline; filename=\"index.html\"");
+                return response.build();
+            }else throw new FileNotFoundException();
 
-            final Response.ResponseBuilder response = Response.ok((Object) new FileInputStream(f));
-            response.header("Content-Disposition", "inline; filename=\"index.html\"");
-            return response.build();
 
         } catch (FileNotFoundException e) {
-            return Response.serverError().entity(new Viewable("general_error")).build();
+            return Response.status(501).entity(new Viewable("/general_error")).build();
         }
     }
 
-    @Path("/{path: .+}")
     @GET
+    @Path("/{path: .+}")
     public Response getFile(@PathParam("path") String path) {
         try {
             final String base =  this.docBean.getDocPath().resolve("html").toString();
             final File f = new File(String.format("%s/%s", base, path));
+            if(f.exists() && !f.isDirectory()) {
+                final Response.ResponseBuilder response = Response.ok((Object) new FileInputStream(f));
+                response.header("Content-Disposition", "inline; filename=\"" + path + "\"");
+                return response.build();
+            }else throw new FileNotFoundException();
 
-            final Response.ResponseBuilder response = Response.ok((Object) new FileInputStream(f));
-            response.header("Content-Disposition", "inline; filename=\"" + path + "\"");
-            return response.build();
         } catch (FileNotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity("File not found: " + e.getMessage()).build();
+            return Response.status(404).entity(new Viewable("/404")).build();
         }
     }
 }

@@ -12,9 +12,8 @@
         <div class="error mx-auto" data-text="501">
             <p class="m-0">501 😵</p>
         </div>
-        <p class="text-dark mb-5 lead" style="margin-top: 3rem;">Cette méthode n'a aucune implémentation sur le
-            serveur</p>
-        <p class="text-black-50 mb-0">Réésayer votre recherche, sinon tentez de :</p><a
-            href="${pageContext.request.contextPath}/">← Retourner sur la page principale</a>
+        <p class="text-dark mb-5 lead" style="margin-top: 3rem;">No implementation for this method on the server!</p>
+        <p class="text-black-50 mb-0">Retry your search, otherwise :</p><a
+            href="${pageContext.request.contextPath}/">← Go back to the main page</a>
     </div>
 </lkhsoft:mainLayout>
