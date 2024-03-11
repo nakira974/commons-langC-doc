@@ -6,8 +6,8 @@ import org.glassfish.jersey.server.mvc.MvcFeature;
 import org.glassfish.jersey.server.mvc.jsp.JspMvcFeature;
 
 @Default
-public class EditorApplication extends ResourceConfig {
-    public EditorApplication() {
+public class DocApplication extends ResourceConfig {
+    public DocApplication() {
         // Register JSP MVC processing feature
         final JspMvcFeature jspMvcFeature = new JspMvcFeature();
         register(jspMvcFeature);

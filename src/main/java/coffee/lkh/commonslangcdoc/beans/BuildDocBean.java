@@ -27,6 +27,10 @@ public class BuildDocBean  implements IBuildDoc{
     Logger logger = Logger.getLogger("CmakeLogger");
 
     private Path buildPath;
+
+    public Path getBuildPath(){
+        return this.buildPath.resolve("cmake-build-debug");
+    }
     public void cloneRepo(String url, String folderName) {
         // Fetch temp directory.
         final String tmpDir = System.getProperty("java.io.tmpdir");
@@ -54,7 +58,6 @@ public class BuildDocBean  implements IBuildDoc{
 
     @Override
     public void executeCmake()  throws IOException, InterruptedException{
-        Files.createDirectories(this.buildPath.resolve("cmake-build-release"));
         try {
             // Check if cmake is present
             final ProcessBuilder pbTest = new ProcessBuilder("where", "cmake");
@@ -63,12 +66,14 @@ public class BuildDocBean  implements IBuildDoc{
 
             if (exitCodeTest == 0) {
                 // Configure project
-                final ProcessBuilder pbConfigure = new ProcessBuilder("cmake", "-G", "MinGW Makefiles", "-DCMAKE_BUILD_TYPE=" + "Debug", "-S", this.buildPath.toString(), "-B", this.buildPath.resolve("cmake-build-debug").toString());
+                final ProcessBuilder pbConfigure = new ProcessBuilder("cmake", "-DCMAKE_BUILD_TYPE=" + "Debug", "-S", this.buildPath.toString(), "-B", this.buildPath.resolve("cmake-build-debug").toString());
                 logOutput(pbConfigure.start());
 
                 // Build project
                 final ProcessBuilder pbBuild = new ProcessBuilder("cmake", "--build", this.buildPath.resolve("cmake-build-debug").toString(), "--target", "collections_commons_doc", "--", "-j", "10");
                 logOutput(pbBuild.start());
+
+                //logOutput(pbBuild.start());
             } else {
                 logger.warn("cmake not found in system PATH");
             }
@@ -76,13 +81,40 @@ public class BuildDocBean  implements IBuildDoc{
             logger.error("Error executing command", e);
         }
     }
-    private void logOutput(Process process) throws IOException, InterruptedException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            logger.info(line);  // Log output line by line
+    private void logOutput(Process process) {
+        // Thread to handle stdout
+        Thread loggerThreadOut = new Thread(() -> {
+            try (BufferedReader readerOut = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = readerOut.readLine()) != null) {
+                    logger.info(line);
+                }
+            } catch (IOException e) {
+                logger.error("Error reading stdout", e);
+            }
+        });
+
+        // Thread to handle stderr
+        Thread loggerThreadErr = new Thread(() -> {
+            try (BufferedReader readerErr = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+                String line;
+                while ((line = readerErr.readLine()) != null) {
+                    logger.error(line);
+                }
+            } catch (IOException e) {
+                logger.error("Error reading stderr", e);
+            }
+        });
+
+        // Start threads
+        loggerThreadOut.start();
+        loggerThreadErr.start();
+
+        // Optional: Wait for process to finish
+        try {
+            process.waitFor();
+        } catch (InterruptedException e) {
+            logger.error("Error in process execution", e);
         }
-        int exitCode = process.waitFor();
-        logger.info("Exit code: " + exitCode);
     }
 }

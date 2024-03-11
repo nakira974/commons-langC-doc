@@ -7,12 +7,13 @@ import jakarta.ejb.Startup;
 import org.jboss.logging.Logger;
 
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Properties;
 
 @Singleton
 @Startup
-public class StartupBean {
-    private static final Logger LOGGER = Logger.getLogger(StartupBean.class);
+public class DocBean {
+    private static final Logger LOGGER = Logger.getLogger(DocBean.class);
 
     @EJB
     private IBuildDoc buildDocBean;
@@ -35,8 +36,13 @@ public class StartupBean {
         }
         return repoUrl;
     }
+
+    public Path getDocPath() {
+        return this.buildDocBean.getBuildPath();
+    }
+
     @PostConstruct
-    void init() {
+    void construct() {
         final String repoUrl = getRepositoryUrl();
         LOGGER.debug(String.format("Cloning repository %s...", repoUrl));
         buildDocBean.cloneRepo(repoUrl, "commons-langC");
