@@ -61,6 +61,7 @@ dependencies {
     //Others
     implementation("org.apache.commons:commons-lang3:3.14.0")
     implementation("io.undertow:undertow-servlet:2.3.10.Final")
+    implementation("org.eclipse.jgit:org.eclipse.jgit:6.9.0.202403050737-r")
 
     //OIDC
     implementation("org.wildfly:wildfly-elytron-oidc-client-subsystem:30.0.0.Final")
