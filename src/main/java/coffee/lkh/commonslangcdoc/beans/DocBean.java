@@ -10,6 +10,9 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Properties;
 
+/**
+ * Startup bean to load application parameters and execute git clone and cmake build by using {@link CMakeBuildBean}
+ */
 @Singleton
 @Startup
 public class DocBean {
@@ -18,6 +21,10 @@ public class DocBean {
     @EJB
     private IBuild buildDocBean;
 
+    /**
+     * Reads <b>application.properties</b> and fetch target repository url
+     * @return Target repository URL
+     */
     public String getRepositoryUrl() {
         String propFileName = "application.properties";
         String repoUrl = "";
@@ -37,10 +44,16 @@ public class DocBean {
         return repoUrl;
     }
 
+    /**
+     * @return Returns Path to the published Doxygen documentation pages
+     */
     public Path getDocPath() {
         return this.buildDocBean.getBuildPath();
     }
 
+    /**
+     * Launches the git clone and cmake builds operations at startup
+     */
     @PostConstruct
     void construct() {
         final String repoUrl = getRepositoryUrl();

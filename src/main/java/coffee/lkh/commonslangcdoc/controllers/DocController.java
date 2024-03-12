@@ -21,6 +21,9 @@ public class DocController {
     @Context
     ServletContext servletContext;
 
+    /**
+     * Application handle for the build & publish
+     */
     private final DocBean docBean;
 
     @Inject
@@ -28,6 +31,10 @@ public class DocController {
         this.docBean = docBean;
     }
 
+    /**
+     * Main entry point of the application
+     * @return index.html if found, error 500 otherwise
+     */
     @GET
     @Path("/")
     public Response get() {
@@ -46,6 +53,12 @@ public class DocController {
         }
     }
 
+    /**
+     * Returns a file from the published documentation if found
+     * @param path Target file in the published files
+     * @return The target .html file if found, error 500 otherwise
+     * @throws FileNotFoundException The file hasn't been found in the published pages
+     */
     @GET
     @Path("/{path: .+}")
     public Response getFile(@PathParam("path") String path) throws FileNotFoundException {
@@ -59,11 +72,5 @@ public class DocController {
             // assuming your 404.jsp is in your WEB-INF folder
             throw new FileNotFoundException(path);
         }
-    }
-
-    @GET
-    @Path("/404")
-    public Response get404() {
-        return Response.status(404).entity(new Viewable("/404.jsp")).build();
     }
 }

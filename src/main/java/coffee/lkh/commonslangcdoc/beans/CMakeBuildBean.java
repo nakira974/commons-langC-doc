@@ -15,12 +15,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * Implementation of {@link IBuild} to process git clone and cmake build
+ */
 @Stateful
 @Named("buildDocumentationBean")
 @Local(IBuild.class)
 public class CMakeBuildBean implements IBuild {
     Logger logger = Logger.getLogger("CmakeLogger");
 
+    /**
+     * Published pages path
+     */
     private Path buildPath;
 
     public Path getBuildPath(){

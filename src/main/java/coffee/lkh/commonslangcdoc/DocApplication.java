@@ -6,6 +6,9 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.mvc.MvcFeature;
 import org.glassfish.jersey.server.mvc.jsp.JspMvcFeature;
 
+/**
+ * JAX-RS Doxygen API for commons-langC
+ */
 @Default
 public class DocApplication extends ResourceConfig {
     public DocApplication() {
