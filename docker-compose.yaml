@@ -8,6 +8,8 @@ services:
         jdk: 21
         ssl_cert: ${COMMONS_LANGC_SSL_PATH}
         ssl_key: ${COMMONS_LANGC_SSL_KEY}
+        wildfly_username: ${COMMONS_LANGC_WILDFLY_USER}
+        wildfly_password:  ${COMMONS_LANGC_WILDFLY_PASSWD}
     image: lkhsoft/commons-langc-doc:v1
     ports:
       - "8443:8443"
