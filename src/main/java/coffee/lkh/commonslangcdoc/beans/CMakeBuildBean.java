@@ -4,8 +4,9 @@ import jakarta.ejb.Local;
 import jakarta.ejb.Stateful;
 import jakarta.inject.Named;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.JGitInternalException;
+import org.eclipse.jgit.api.PullCommand;
+import org.eclipse.jgit.api.PullResult;
+import org.eclipse.jgit.api.errors.*;
 import org.jboss.logging.Logger;
 
 import java.io.BufferedReader;
@@ -39,19 +40,33 @@ public class CMakeBuildBean implements IBuild {
         try {
             // Create a directory in the temp directory.
             final Path directory = Paths.get(finalPath.toString(), folderName);
-            Files.createDirectories(directory);
             buildPath = directory;
-            try(final Git git =  Git.cloneRepository()
-                    .setURI(url)
-                    .setDirectory(this.buildPath.toFile())
-                    .call()){
-                // Init and update submodules after the clone
-                git.submoduleInit().call();
-                git.submoduleUpdate().call();
-            }catch (JGitInternalException | GitAPIException e){
-                Logger.getLogger(CMakeBuildBean.class).error("Git api error!",e);
+            if(!buildPath.toFile().exists()){
+                Files.createDirectories(directory);
+                logger.info("cloning repository..");
+                try(final Git git =  Git.cloneRepository()
+                        .setURI(url)
+                        .setDirectory(this.buildPath.toFile())
+                        .call()){
+                    // Init and update submodules after the clone
+                    git.submoduleInit().call();
+                    git.submoduleUpdate().call();
+                }catch (JGitInternalException | GitAPIException e){
+                    Logger.getLogger(CMakeBuildBean.class).error("Git api error!",e);
 
+                }
+            }else{
+                logger.info("pulling repository..");
+                try(final Git pull = Git
+                        .open(this.buildPath.toFile())){
+                    final PullResult res = pull.pull().call();
+                    if(!res.isSuccessful()) throw new NotMergedException();
+                } catch (GitAPIException e) {
+                    throw new RuntimeException(e);
+                }
             }
+
+
         } catch (IOException e) {
             Logger.getLogger(CMakeBuildBean.class).error("Error while cloning repo!",e);
         }
