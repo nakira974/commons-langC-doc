@@ -45,11 +45,11 @@ public class DocController {
                 final Response.ResponseBuilder response = Response.ok((Object) new FileInputStream(f));
                 response.header("Content-Disposition", "inline; filename=\"index.html\"");
                 return response.build();
-            }else throw new FileNotFoundException();
+            }else throw new Exception();
 
 
-        } catch (FileNotFoundException e) {
-            return Response.serverError().entity("The index.html Doxygen page is missing!").build();
+        } catch (Exception e) {
+            throw new RuntimeException("Doxygen index.html file is missing!");
         }
     }
 
