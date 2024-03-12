@@ -42,24 +42,28 @@ public class DocController {
 
 
         } catch (FileNotFoundException e) {
-            return Response.status(501).entity(new Viewable("/general_error")).build();
+            return Response.serverError().entity("The index.html Doxygen page is missing!").build();
         }
     }
 
     @GET
     @Path("/{path: .+}")
-    public Response getFile(@PathParam("path") String path) {
-        try {
-            final String base =  this.docBean.getDocPath().resolve("html").toString();
-            final File f = new File(String.format("%s/%s", base, path));
-            if(f.exists() && !f.isDirectory()) {
-                final Response.ResponseBuilder response = Response.ok((Object) new FileInputStream(f));
-                response.header("Content-Disposition", "inline; filename=\"" + path + "\"");
-                return response.build();
-            }else throw new FileNotFoundException();
-
-        } catch (FileNotFoundException e) {
-            return Response.status(404).entity(new Viewable("/404")).build();
+    public Response getFile(@PathParam("path") String path) throws FileNotFoundException {
+        final String base = this.docBean.getDocPath().resolve("html").toString();
+        final File f = new File(String.format("%s/%s", base, path));
+        if (f.exists() && !f.isDirectory()) {
+            final Response.ResponseBuilder response = Response.ok((Object) new FileInputStream(f));
+            response.header("Content-Disposition", "inline; filename=\"" + path + "\"");
+            return response.build();
+        }else{
+            // assuming your 404.jsp is in your WEB-INF folder
+            throw new FileNotFoundException(path);
         }
+    }
+
+    @GET
+    @Path("/404")
+    public Response get404() {
+        return Response.status(404).entity(new Viewable("/404.jsp")).build();
     }
 }

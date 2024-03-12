@@ -28,11 +28,11 @@ public class CMakeBuildBean implements IBuild {
     }
     public void cloneRepo(String url, String folderName) {
         // Fetch temp directory.
-        final String tmpDir = System.getProperty("java.io.tmpdir");
-
+        final Path tempPath = Paths.get(System.getProperty("java.io.tmpdir"));
+        final Path finalPath = tempPath.resolve("srv").resolve("pages");
         try {
             // Create a directory in the temp directory.
-            final Path directory = Paths.get(tmpDir, folderName);
+            final Path directory = Paths.get(finalPath.toString(), folderName);
             Files.createDirectories(directory);
             buildPath = directory;
             try(final Git git =  Git.cloneRepository()
@@ -61,7 +61,7 @@ public class CMakeBuildBean implements IBuild {
 
             if (exitCodeTest == 0) {
                 // Configure project
-                final ProcessBuilder pbConfigure = new ProcessBuilder("cmake", "-DCMAKE_BUILD_TYPE=" + "Debug", "-S", this.buildPath.toString(), "-B", this.buildPath.resolve("cmake-build-debug").toString());
+                final ProcessBuilder pbConfigure = new ProcessBuilder("cmake", "-G","MinGW Makefiles", "-DCMAKE_BUILD_TYPE=" + "Debug", "-S", this.buildPath.toString(), "-B", this.buildPath.resolve("cmake-build-debug").toString());
                 logOutput(pbConfigure.start());
 
                 // Build project
